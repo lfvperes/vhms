@@ -60,11 +60,13 @@ class Tutor {
   + getId(): long
   + getPets(): List<Patient>
   + getPhone(): long
+  + getEmail(): String
   + setName(name: String): void
   + setId(id: long): void
   + addPet(patient: Patient): void
   + removePet(patient: Patient): void
   + setPhone(phone: long): void
+  + setEmail(email: String): void
 }
 
 class Doctor {
