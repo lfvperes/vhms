@@ -1,0 +1,122 @@
+@startuml
+enum Species {
+  Canine
+  Feline
+  Avian
+  Rodent
+  Reptile
+  Anfibian
+  Fish
+  Other
+}
+
+class Patient {
+  - name: String
+  - age: byte
+  - tutor: Tutor
+  - species: Species
+  - id: long
+  - microchip: boolean
+  - insurance: boolean
+  - medicalHistory: List<Appointment>
+  - sex: boolean
+  - weight: float
+  - breed: String
+  + Patient(name: String, age: byte, tutor: Tutor, species: Species, id: long, microchip: boolean, insurance: boolean, sex: boolean, weight: float, breed: String)
+  + getName(): String
+  + getAge(): byte
+  + getMedicalHistory(): List<Appointment>
+  + getTutor(): Tutor
+  + getSpecies(): Species
+  + getId(): long
+  + hasMicrochip(): boolean
+  + hasInsurance(): boolean
+  + getSex(): boolean
+  + getWeight(): float
+  + getBreed(): String
+  + setName(name: String): void
+  + setAge(age: byte): void
+  + setMedicalHistory(medicalHistory: String): void
+  + setTutor(tutor: Tutor): void
+  + setSpecies(species: Species): void
+  + setId(id: long): void
+  + setMicrochip(microchip: boolean)
+  + setInsurance(insurance: boolean)
+  + addAppointment(appointment: Appointment): void
+  + removeAppointment(appointment: Appointment): void
+  + setSex(sex: boolean): void
+  + setWeight(weight: float): void
+  + setBreed(breed: String): void
+}
+
+class Tutor {
+  - name: String
+  - id: long
+  - pets: List<Patient>
+  - email: String
+  - phone: long
+  + Tutor(name: String, id: long, email: String, phone: long)
+  + getName(): String
+  + getId(): long
+  + getPets(): List<Patient>
+  + getPhone(): long
+  + setName(name: String): void
+  + setId(id: long): void
+  + addPet(patient: Patient): void
+  + removePet(patient: Patient): void
+  + setPhone(phone: long): void
+}
+
+class Doctor {
+  - name: String
+  - specialization: String
+  - id: long
+  + Doctor(name: String, specialization: String, id: long)
+  + getName(): String
+  + getSpecialization(): String
+  + getId(): long
+  + setName(name: String): void
+  + setSpecialization(specialization: String): void
+  + setId(id: long): void
+}
+
+class Appointment {
+  - patient: Patient
+  - doctor: Doctor
+  - date: String
+  - tutor: Tutor
+  - billing: Billing
+  - report: String
+  + Appointment(patient: Patient, doctor: Doctor, date: String, tutor: Tutor, billing: Billing)
+  + getPatient(): Patient
+  + getDoctor(): Doctor
+  + getDate(): String
+  + getTutor(): Tutor
+  + getBilling(): Billing
+  + setPatient(patient: Patient): void
+  + setDoctor(doctor: Doctor): void
+  + setDate(date: String): void
+  + setTutor(tutor: Tutor): void
+  + setBilling(billing: Billing): void
+}
+
+class Billing {
+  - amount: double
+  - paid: boolean
+  - appointment: Appointment
+  + Billing(amount: double, paid: boolean, appointment: Appointment)
+  + getAmount(): double
+  + isPaid(): boolean
+  + getAppointment(): Appointment
+  + setAmount(amount: double): void
+  + setPaid(paid: boolean): void
+  + setAppointment(appointment: Appointment): void
+}
+
+Patient "1" -- "1" Tutor
+Tutor "1" --* "0..*" Patient
+Patient "1" --* "0..*" Appointment
+Doctor "1" --* "0..*" Appointment
+Tutor "1" --* "0..*" Appointment
+Appointment "1" -- "1" Billing
+@enduml
