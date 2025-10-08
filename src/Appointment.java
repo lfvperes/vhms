@@ -7,7 +7,7 @@
  *
  * @author lfvperes
  */
-class Appointment {
+public class Appointment {
     private Patient patient;
     private Doctor doctor;
     private String date;

@@ -7,7 +7,7 @@
  *
  * @author lfvperes
  */
-class Doctor {
+public class Doctor {
     private String name;
     private String specialization;
     private long id;

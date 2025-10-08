@@ -7,7 +7,7 @@
  *
  * @author lfvperes
  */
-class Billing {
+public class Billing {
     private double amount;
     private boolean paid;
     private Appointment appointment;

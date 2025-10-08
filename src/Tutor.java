@@ -7,7 +7,7 @@
 import java.util.ArrayList;
 import java.util.List;
 
-class Tutor {
+public class Tutor {
     private String name;
     private long id;
     private List<Patient> pets;
