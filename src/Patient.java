@@ -39,8 +39,10 @@ public class Patient {
     public Tutor getTutor() {
         return tutor;
     }
-    public void setTutor(Tutor tutor) {
-        this.tutor = tutor;
+    public void changeTutor(Tutor oldTutor, Tutor newTutor) {
+        oldTutor.removePet(this);
+        newTutor.addPet(this);
+        this.tutor = newTutor;
     }
     public Species getSpecies() {
         return species;
@@ -54,13 +56,17 @@ public class Patient {
     public void setId(long id) {
         this.id = id;
     }
-    public boolean isMicrochip() {
+    public boolean hasMicrochip() {
         return microchip;
     }
-    public void setMicrochip(boolean microchip) {
-        this.microchip = microchip;
+    public void addMicrochip() {
+        if (microchip) {
+            throw new IllegalArgumentException("Patient already has a microchip.");
+        } else {
+            this.microchip = true;
+        }
     }
-    public boolean isInsurance() {
+    public boolean hasInsurance() {
         return insurance;
     }
     public void setInsurance(boolean insurance) {
@@ -72,7 +78,7 @@ public class Patient {
     public void setMedicalHistory(List<Appointment> medicalHistory) {
         this.medicalHistory = medicalHistory;
     }
-    public boolean isSex() {
+    public boolean isMale() {
         return sex;
     }
     public void setSex(boolean sex) {
