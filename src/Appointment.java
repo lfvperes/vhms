@@ -45,7 +45,11 @@ public class Appointment {
     }
 
     public void setDate(String date) {
-        this.date = date;
+        if (ValidationUtils.isValidDateTimeFormat(date)) {
+            this.date = date;
+        } else {
+            throw new IllegalArgumentException("Date must be a valid calendar date and time in yyyy-MM-dd'T'HH:mm format.");
+        }
     }
 
     public Tutor getTutor() {
