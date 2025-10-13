@@ -3,18 +3,18 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 
-
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class Tutor {
     private String name;
     private long id;
     private List<Patient> pets;
     private String email;
-    private long phone;
+    private String phone;
 
-    public Tutor(String name, long id, String email, long phone) {
+    public Tutor(String name, long id, String email, String phone) {
         this.name = name;
         this.id = id;
         this.email = email;
@@ -50,12 +50,18 @@ public class Tutor {
         this.pets.remove(patient);
     }
 
-    public long getPhone() {
+    public String getPhone() {
         return phone;
     }
 
-    public void setPhone(long phone) {
-        this.phone = phone;
+    public void setPhone(String phone) {
+        // validation for a Brazilian mobile phone number
+        String phoneRegex = "^[1-9]{2}9{1}[0-9]{8}$";
+        if (phone != null && phone.matches(phoneRegex)) {
+            this.phone = phone;
+        } else {
+            throw new IllegalArgumentException("The provided phone number is not a valid Brazilian mobile phone number: " + phone);
+        }
     }
 
     public String getEmail() {
@@ -63,6 +69,13 @@ public class Tutor {
     }
 
     public void setEmail(String email) {
-        this.email = email;
+        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@" + "(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+    
+        Pattern p = Pattern.compile(emailRegex);
+        if (email != null && p.matcher(email).matches()) {
+            this.email = email;
+        } else {
+            throw new IllegalArgumentException("The provided email address is invalid: " + email);
+        }
     }
 }

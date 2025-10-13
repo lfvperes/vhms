@@ -1,3 +1,5 @@
+import java.util.List;
+
 public class Patient {
     private String name;
     private byte age;
@@ -33,8 +35,12 @@ public class Patient {
     public byte getAge() {
         return age;
     }
-    public void setAge(byte age) {
-        this.age = age;
+    public void setAge(byte newAge) {
+        if (newAge <= 0) {
+            // Throw and exception to signal that this is an invalid operation
+            throw new IllegalArgumentException("Age must be positive.");
+        }
+        this.age = newAge;
     }
     public Tutor getTutor() {
         return tutor;
@@ -87,9 +93,15 @@ public class Patient {
     public float getWeight() {
         return weight;
     }
-    public void setWeight(float weight) {
-        this.weight = weight;
+    
+    public void setWeight(float newWeight) {
+        if (newWeight <= 0) {
+            // Throw an exception to signal that this is an invalid operation
+            throw new IllegalArgumentException("Weight must be positive.");
+        }
+        this.weight = newWeight;
     }
+    
     public String getBreed() {
         return breed;
     }

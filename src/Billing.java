@@ -23,7 +23,11 @@ public class Billing {
     }
 
     public void setAmount(double amount) {
-        this.amount = amount;
+        if (amount <= 0) {
+            throw new IllegalArgumentException("Bill can't be negative or zero.");
+        } else {
+            this.amount = amount;
+        }
     }
 
     public boolean isPaid() {
