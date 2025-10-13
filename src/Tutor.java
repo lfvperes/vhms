@@ -5,7 +5,6 @@
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
 
 public class Tutor {
     private String name;
@@ -55,9 +54,7 @@ public class Tutor {
     }
 
     public void setPhone(String phone) {
-        // validation for a Brazilian mobile phone number
-        String phoneRegex = "^[1-9]{2}9{1}[0-9]{8}$";
-        if (phone != null && phone.matches(phoneRegex)) {
+        if (ValidationUtils.isValidPhone(phone)) {
             this.phone = phone;
         } else {
             throw new IllegalArgumentException("The provided phone number is not a valid Brazilian mobile phone number: " + phone);
@@ -69,10 +66,7 @@ public class Tutor {
     }
 
     public void setEmail(String email) {
-        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@" + "(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
-    
-        Pattern p = Pattern.compile(emailRegex);
-        if (email != null && p.matcher(email).matches()) {
+        if (ValidationUtils.isValidEmail(email)) {
             this.email = email;
         } else {
             throw new IllegalArgumentException("The provided email address is invalid: " + email);
