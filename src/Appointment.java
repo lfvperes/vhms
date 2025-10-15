@@ -3,6 +3,8 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 
+import java.time.LocalDateTime;
+
 /**
  *
  * @author lfvperes
@@ -10,15 +12,20 @@
 public class Appointment {
     private Patient patient;
     private Doctor doctor;
-    private String date;
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
     private Tutor tutor;
     private Billing billing;
     private String report;
 
-    public Appointment(Patient patient, Doctor doctor, String date, Tutor tutor, Billing billing) {
+    public Appointment(Patient patient, Doctor doctor, LocalDateTime startTime, LocalDateTime endTime, Tutor tutor, Billing billing) {
+        if (startTime == null || endTime == null || endTime.isBefore(startTime)) {
+            throw new IllegalArgumentException("Appointment start time must be before end time.");
+        }
         this.patient = patient;
         this.doctor = doctor;
-        this.date = date;
+        this.startTime = startTime;
+        this.endTime = endTime;
         this.tutor = tutor;
         this.billing = billing;
         this.report = ""; // Default empty report
@@ -40,16 +47,26 @@ public class Appointment {
         this.doctor = doctor;
     }
 
-    public String getDate() {
-        return date;
+    public LocalDateTime getStartTime() {
+        return startTime;
     }
 
-    public void setDate(String date) {
-        if (ValidationUtils.isValidDateTimeFormat(date)) {
-            this.date = date;
-        } else {
-            throw new IllegalArgumentException("Date must be a valid calendar date and time in yyyy-MM-dd'T'HH:mm format.");
+    public void setStartTime(LocalDateTime startTime) {
+        if (startTime == null || (this.endTime != null && this.endTime.isBefore(startTime))) {
+            throw new IllegalArgumentException("Appointment start time must be before end time.");
         }
+        this.startTime = startTime;
+    }
+
+    public LocalDateTime getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(LocalDateTime endTime) {
+        if (endTime == null || (this.startTime != null && endTime.isBefore(this.startTime))) {
+            throw new IllegalArgumentException("Appointment end time must be after start time.");
+        }
+        this.endTime = endTime;
     }
 
     public Tutor getTutor() {
