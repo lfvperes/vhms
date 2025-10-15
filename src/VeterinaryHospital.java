@@ -10,6 +10,10 @@ public class VeterinaryHospital {
     // Define a default duration for appointments, e.g., 30 minutes.
     private static final long DEFAULT_APPOINTMENT_DURATION_MINUTES = 30;
 
+    public VeterinaryHospital() {
+        this(new java.util.ArrayList<>(), new java.util.ArrayList<>(), new java.util.ArrayList<>());
+    }
+
     public VeterinaryHospital(List<Doctor> doctors, List<Patient> patients, List<Appointment> schedule) {
         this.doctors = doctors;
         this.patients = patients;
@@ -20,16 +24,28 @@ public class VeterinaryHospital {
         return doctors;
     }
 
-    public void setDoctors(List<Doctor> doctors) {
-        this.doctors = doctors;
+    public void addDoctor(Doctor doctor) {
+        if (doctor != null) {
+            this.doctors.add(doctor);
+        }
+    }
+
+    public void removeDoctor(Doctor doctor) {
+        this.doctors.remove(doctor);
     }
 
     public List<Patient> getPatients() {
         return patients;
     }
 
-    public void setPatients(List<Patient> patients) {
-        this.patients = patients;
+    public void addPatient(Patient patient) {
+        if (patient != null) {
+            this.patients.add(patient);
+        }
+    }
+
+    public void removePatient(Patient patient) {
+        this.patients.remove(patient);
     }
 
     public List<Appointment> getSchedule() {
