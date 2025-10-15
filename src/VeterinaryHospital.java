@@ -21,7 +21,7 @@ public class VeterinaryHospital {
     }
 
     public List<Doctor> getDoctors() {
-        return doctors;
+        return java.util.Collections.unmodifiableList(doctors);
     }
 
     public void addDoctor(Doctor doctor) {
@@ -35,7 +35,7 @@ public class VeterinaryHospital {
     }
 
     public List<Patient> getPatients() {
-        return patients;
+        return java.util.Collections.unmodifiableList(patients);
     }
 
     public void addPatient(Patient patient) {
@@ -49,11 +49,7 @@ public class VeterinaryHospital {
     }
 
     public List<Appointment> getSchedule() {
-        return schedule;
-    }
-
-    public void setSchedule(List<Appointment> schedule) {
-        this.schedule = schedule;
+        return java.util.Collections.unmodifiableList(schedule);
     }
 
     /**
