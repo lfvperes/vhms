@@ -1,3 +1,4 @@
+package com.vhms.model;
 import java.util.List;
 
 public class Patient {
