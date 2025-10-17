@@ -91,9 +91,7 @@ public class VeterinaryHospital {
         newBilling.setAppointment(newAppointment);
 
         schedule.add(newAppointment);
-        if (patient.getMedicalHistory() != null) {
-            patient.getMedicalHistory().add(newAppointment);
-        }
+        patient.addAppointmentToHistory(newAppointment);
 
         return newAppointment;
     }
