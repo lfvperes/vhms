@@ -5,6 +5,7 @@ package com.vhms.model;
  */
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  *
@@ -92,5 +93,13 @@ public class Appointment {
 
     public void setReport(String report) {
         this.report = report;
+    }
+
+    public String getSummary() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+        String formattedStartTime = startTime.format(formatter);
+        return "Appointment Scheduled for " + patient.getName() +
+               " with " + doctor.getName() +
+               " at " + formattedStartTime;
     }
 }

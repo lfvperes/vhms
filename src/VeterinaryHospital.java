@@ -3,6 +3,7 @@ import com.vhms.model.Billing;
 import com.vhms.model.Doctor;
 import com.vhms.model.Patient;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
@@ -94,6 +95,18 @@ public class VeterinaryHospital {
         patient.addAppointmentToHistory(newAppointment);
 
         return newAppointment;
+    }
+
+    public void printSchedule() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+        System.out.println("\nCurrent Hospital Schedule:");
+        for (Appointment appt : this.schedule) {
+            String formattedStartTime = appt.getStartTime().format(formatter);
+            System.out.println("- " + appt.getPatient().getName() +
+                               " and " + appt.getTutor().getName() +
+                               " with " + appt.getDoctor().getName() +
+                               " at " + formattedStartTime);
+        }
     }
 
     /**
