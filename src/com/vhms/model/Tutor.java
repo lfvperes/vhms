@@ -6,12 +6,13 @@ package com.vhms.model;
 
 import com.vhms.utils.ValidationUtils;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Tutor {
     private String name;
     private long id;
-    private List<Patient> pets;
+    private final List<Patient> pets;
     private String email;
     private String phone;
 
@@ -20,7 +21,7 @@ public class Tutor {
         this.id = id;
         this.email = email;
         this.phone = phone;
-        this.pets = new ArrayList<>(pets);
+        this.pets = new ArrayList<>();
     }
 
     public String getName() {
@@ -40,7 +41,7 @@ public class Tutor {
     }
 
     public List<Patient> getPets() {
-        return pets;
+        return Collections.unmodifiableList(pets);
     }
 
     public void addPet(Patient patient) {
