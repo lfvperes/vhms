@@ -26,15 +26,7 @@ public class App {
         Appointment newAppointment = hospital.scheduleAppointment(fluffy, drSmith, appointmentTime);
 
         // Print out the schedule to verify
-        System.out.println("Appointment Scheduled for " + newAppointment.getPatient().getName() +
-                           " with " + newAppointment.getDoctor().getName() +
-                           " at " + newAppointment.getStartTime());
-
-        System.out.println("\nCurrent Hospital Schedule:");
-        for (Appointment appt : hospital.getSchedule()) {
-            System.out.println("- " + appt.getPatient().getName() +
-                               " with " + appt.getDoctor().getName() +
-                               " at " + appt.getStartTime());
-        }
+        System.out.println(newAppointment.getSummary());
+        hospital.printSchedule();
     }
 }
