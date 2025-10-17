@@ -1,5 +1,7 @@
-import java.util.Collections;package com.vhms.model;
+package com.vhms.model;
+
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Patient {
