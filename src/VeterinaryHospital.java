@@ -14,6 +14,7 @@ public class VeterinaryHospital {
 
     // Define a default duration for appointments, e.g., 30 minutes.
     private static final long DEFAULT_APPOINTMENT_DURATION_MINUTES = 30;
+    private static final double DEFAULT_APPOINTMENT_PRICE = 150.00; // Standard consultation fee
 
     public VeterinaryHospital() {
         this(new java.util.ArrayList<>(), new java.util.ArrayList<>(), new java.util.ArrayList<>());
@@ -68,7 +69,18 @@ public class VeterinaryHospital {
      */
     public Appointment scheduleAppointment(Patient patient, Doctor doctor, LocalDateTime startTime) {
         LocalDateTime endTime = startTime.plus(DEFAULT_APPOINTMENT_DURATION_MINUTES, ChronoUnit.MINUTES);
-        return scheduleAppointment(patient, doctor, startTime, endTime);
+        return scheduleAppointment(patient, doctor, startTime, endTime, DEFAULT_APPOINTMENT_PRICE);
+    }
+
+    // Overload for scheduling with a custom price and default duration
+    public Appointment scheduleAppointment(Patient patient, Doctor doctor, LocalDateTime startTime, double price) {
+        LocalDateTime endTime = startTime.plus(DEFAULT_APPOINTMENT_DURATION_MINUTES, ChronoUnit.MINUTES);
+        return scheduleAppointment(patient, doctor, startTime, endTime, price);
+    }
+
+    // Overload for scheduling with custom duration and default price 
+    public Appointment scheduleAppointment(Patient patient, Doctor doctor, LocalDateTime startTime, LocalDateTime endTime) {
+        return scheduleAppointment(patient, doctor, startTime, endTime, DEFAULT_APPOINTMENT_PRICE);
     }
 
     /**
@@ -79,15 +91,16 @@ public class VeterinaryHospital {
      * @param doctor    The doctor for the appointment.
      * @param startTime The desired start time of the appointment.
      * @param endTime   The desired end time of the appointment.
+     * @param price     The custom price for this appointment.
      * @return The created Appointment object if successful, or null if the time slot is unavailable.
      */
-    public Appointment scheduleAppointment(Patient patient, Doctor doctor, LocalDateTime startTime, LocalDateTime endTime) {
+    public Appointment scheduleAppointment(Patient patient, Doctor doctor, LocalDateTime startTime, LocalDateTime endTime, double price) {
         if (!isDoctorAvailable(doctor, startTime, endTime)) {
             System.out.println("Doctor " + doctor.getName() + " is not available between " + startTime + " and " + endTime);
             return null;
         }
 
-        Billing newBilling = new Billing(100.00, false, null); // Base fee
+        Billing newBilling = new Billing(price, false, null); // Custom price
         Appointment newAppointment = new Appointment(patient, doctor, startTime, endTime, patient.getTutor(), newBilling);
         newBilling.setAppointment(newAppointment);
 
@@ -105,7 +118,8 @@ public class VeterinaryHospital {
             System.out.println("- " + appt.getPatient().getName() +
                                " and " + appt.getTutor().getName() +
                                " with " + appt.getDoctor().getName() +
-                               " at " + formattedStartTime);
+                               " at " + formattedStartTime +
+                               ", Fee: $" + appt.getBilling().getAmount());
         }
     }
 
@@ -132,3 +146,4 @@ public class VeterinaryHospital {
         return true; // No conflicts found.
     }
 }
+
