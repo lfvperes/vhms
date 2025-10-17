@@ -1,4 +1,5 @@
-package com.vhms.model;
+import java.util.Collections;package com.vhms.model;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Patient {
@@ -9,7 +10,7 @@ public class Patient {
     private long id;
     private boolean microchip;
     private boolean insurance;
-    private List<Appointment> medicalHistory;
+    private final List<Appointment> medicalHistory;
     private boolean sex;
     private float weight;
     private String breed;
@@ -25,6 +26,7 @@ public class Patient {
         this.species = species;
         this.tutor = tutor;
         this.weight = weight;
+        this.medicalHistory = new ArrayList<>();
     }
 
     public String getName() {
@@ -80,10 +82,15 @@ public class Patient {
         this.insurance = insurance;
     }
     public List<Appointment> getMedicalHistory() {
-        return medicalHistory;
+        return Collections.unmodifiableList(medicalHistory);
     }
-    public void setMedicalHistory(List<Appointment> medicalHistory) {
-        this.medicalHistory = medicalHistory;
+
+    public void addAppointmentToHistory(Appointment appointment) {
+        this.medicalHistory.add(appointment);
+    }
+
+    public void removeAppointmentFromHistory(Appointment appointment) {
+        this.medicalHistory.remove(appointment);
     }
     public boolean isMale() {
         return sex;
