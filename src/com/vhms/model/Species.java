@@ -14,7 +14,7 @@ public enum Species {
     Avian,
     Rodent,
     Reptile,
-    Anfibian,
+    Amphibian,
     Fish,
     Other
 }
