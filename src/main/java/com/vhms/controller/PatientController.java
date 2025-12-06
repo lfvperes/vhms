@@ -4,6 +4,8 @@ import com.vhms.model.Patient;
 import com.vhms.service.HospitalService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,5 +25,10 @@ public class PatientController {
     @GetMapping
     public List<Patient> getAllPatients() {
         return hospitalService.getAllPatients();
+    }
+
+    @PostMapping
+    public Patient createPatient(@RequestBody Patient patient) {
+        return hospitalService.addPatient(patient);
     }
 }

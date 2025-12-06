@@ -9,16 +9,24 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
+import java.util.concurrent.atomic.AtomicLong;
+
 @Service
 public class HospitalService {
     // Using ConcurrentHashMap for thread-safe access
     private final ConcurrentHashMap<Long, Patient> patients = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<Long, Doctor> doctors = new ConcurrentHashMap<>();
+    private final AtomicLong patientIdCounter = new AtomicLong();
+    private final AtomicLong doctorIdCounter = new AtomicLong();
 
-    public void addPatient(Patient patient) {
+    public Patient addPatient(Patient patient) {
         if (patient != null) {
-            patients.put(patient.getId(), patient);
+            long newId = patientIdCounter.incrementAndGet();
+            patient.setId(newId);
+            patients.put(newId, patient);
+            return patient;
         }
+        return null;
     }
 
     public List<Patient> getAllPatients() {
@@ -29,10 +37,14 @@ public class HospitalService {
         return patients.get(id);
     }
 
-    public void addDoctor(Doctor doctor) {
+    public Doctor addDoctor(Doctor doctor) {
         if (doctor != null) {
-            doctors.put(doctor.getId(), doctor);
+            long newId = doctorIdCounter.incrementAndGet();
+            doctor.setId(newId);
+            doctors.put(newId, doctor);
+            return doctor;
         }
+        return null;
     }
 
     public List<Doctor> getAllDoctors() {
