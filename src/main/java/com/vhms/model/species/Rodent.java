@@ -6,7 +6,9 @@ import com.vhms.model.Tutor;
 
 public class Rodent extends Patient {
 
-    public Rodent(byte age, String breed, long id, boolean insurance, boolean microchip, String name, boolean sex, Tutor tutor, float weight) {
-        super(age, breed, id, insurance, microchip, name, sex, Species.Rodent, tutor, weight);
+    // Updated constructor: removed 'long id'
+    public Rodent(byte age, String breed, boolean insurance, boolean microchip, String name, boolean sex, Tutor tutor, float weight) {
+        super(age, breed, insurance, microchip, name, sex, Species.Rodent, tutor, weight);
     }
 }
+
