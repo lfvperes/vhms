@@ -1,22 +1,51 @@
 package com.vhms.model;
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 
-/**
- *
- * @author lfvperes
- */
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+
+@Entity
 public class Billing {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String description;
     private double amount;
     private boolean paid;
+    @ManyToOne
+    @JoinColumn(name = "appointment_id")
     private Appointment appointment;
 
-    public Billing(double amount, boolean paid, Appointment appointment) {
+    // Constructors
+    public Billing() {
+    }
+
+    public Billing(String description, double amount, boolean paid, Appointment appointment) {
+        this.description = description;
         this.amount = amount;
         this.paid = paid;
         this.appointment = appointment;
+    }
+
+    // Getters and setters for id, description
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public double getAmount() {
@@ -24,11 +53,7 @@ public class Billing {
     }
 
     public void setAmount(double amount) {
-        if (amount <= 0) {
-            throw new IllegalArgumentException("Bill can't be negative or zero.");
-        } else {
-            this.amount = amount;
-        }
+        this.amount = amount;
     }
 
     public boolean isPaid() {
