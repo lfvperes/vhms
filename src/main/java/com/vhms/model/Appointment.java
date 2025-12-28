@@ -1,36 +1,90 @@
 package com.vhms.model;
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 /**
- *
- * @author lfvperes
+ * Represents a scheduled appointment with a patient.
  */
+@Entity
+@Table(name = "appointments") // Explicitly name the table
 public class Appointment {
-    private Patient patient;
-    private Doctor doctor;
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
-    private Tutor tutor;
-    private Billing billing;
-    private String report;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "appointment_id", unique = true, nullable = false) // Explicit column name for ID
+    private Long id;
 
-    public Appointment(Patient patient, Doctor doctor, LocalDateTime startTime, LocalDateTime endTime, Tutor tutor, Billing billing) {
-        if (startTime == null || endTime == null || endTime.isBefore(startTime)) {
-            throw new IllegalArgumentException("Appointment start time must be before end time.");
+    // Fields for scheduling and details
+    @Column(name = "appointment_date_time", nullable = false)
+    private LocalDateTime appointmentDateTime;
+
+    @Column(name = "reason", length = 500) // Added length for reason
+    private String reason;
+
+    @Column(name = "notes", columnDefinition = "TEXT") // Use TEXT for potentially long notes
+    private String notes;
+
+    // Relationships
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL) // Lazy fetch, cascade updates to patient
+    @JoinColumn(name = "patient_id", nullable = false) // Foreign key column in the 'appointments' table
+    private Patient patient;
+
+    @ManyToOne(fetch = FetchType.LAZY) // Lazy fetch for Doctor
+    @JoinColumn(name = "doctor_id") // Foreign key column for Doctor
+    private Doctor doctor;
+
+    @ManyToOne(fetch = FetchType.LAZY) // Lazy fetch for Tutor
+    @JoinColumn(name = "tutor_id") // Foreign key column for Tutor
+    private Tutor tutor;
+
+    // --- Billing Relationship ---
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL) // Assuming Appointment owns the relationship for simplicity now
+    @JoinColumn(name = "billing_id", unique = true) // Unique FK if one appointment has one billing
+    private Billing billing;
+
+    // Constructors
+
+    // Default constructor for JPA
+    public Appointment() {
+        this.reason = ""; // Initialize optional fields
+        this.notes = "";
+    }
+
+    // Constructor for creating new appointments, establishing key relationships
+    public Appointment(LocalDateTime appointmentDateTime, String reason, Patient patient, Doctor doctor) {
+        if (appointmentDateTime == null || patient == null || doctor == null) {
+            throw new IllegalArgumentException("Appointment date/time, patient, and doctor are required.");
         }
+        this.appointmentDateTime = appointmentDateTime;
+        this.reason = reason != null ? reason : "";
         this.patient = patient;
         this.doctor = doctor;
-        this.startTime = startTime;
-        this.endTime = endTime;
+        this.notes = ""; // Default empty notes
+    }
+
+    // Constructor to include more details if needed
+    public Appointment(LocalDateTime appointmentDateTime, String reason, String notes, Patient patient, Doctor doctor, Tutor tutor) {
+        this(appointmentDateTime, reason, patient, doctor); // Call the primary constructor
+        this.notes = notes != null ? notes : "";
         this.tutor = tutor;
-        this.billing = billing;
-        this.report = ""; // Default empty report
+    }
+
+    // Getters and setters
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Patient getPatient() {
@@ -49,26 +103,29 @@ public class Appointment {
         this.doctor = doctor;
     }
 
-    public LocalDateTime getStartTime() {
-        return startTime;
+    public LocalDateTime getAppointmentDateTime() {
+        return appointmentDateTime;
     }
 
-    public void setStartTime(LocalDateTime startTime) {
-        if (startTime == null || (this.endTime != null && this.endTime.isBefore(startTime))) {
-            throw new IllegalArgumentException("Appointment start time must be before end time.");
-        }
-        this.startTime = startTime;
+    public void setAppointmentDateTime(LocalDateTime appointmentDateTime) {
+        // Add validation if needed, e.g., ensure it's not in the past
+        this.appointmentDateTime = appointmentDateTime;
     }
 
-    public LocalDateTime getEndTime() {
-        return endTime;
+    public String getReason() {
+        return reason;
     }
 
-    public void setEndTime(LocalDateTime endTime) {
-        if (endTime == null || (this.startTime != null && endTime.isBefore(this.startTime))) {
-            throw new IllegalArgumentException("Appointment end time must be after start time.");
-        }
-        this.endTime = endTime;
+    public void setReason(String reason) {
+        this.reason = reason;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
     }
 
     public Tutor getTutor() {
@@ -85,21 +142,10 @@ public class Appointment {
 
     public void setBilling(Billing billing) {
         this.billing = billing;
-    }
-
-    public String getReport() {
-        return report;
-    }
-
-    public void setReport(String report) {
-        this.report = report;
-    }
-
-    public String getSummary() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
-        String formattedStartTime = startTime.format(formatter);
-        return "Appointment Scheduled for " + patient.getName() +
-               " with " + doctor.getName() +
-               " at " + formattedStartTime;
+        // If Appointment owns the FK and relationship, ensure the back-reference is set
+        if (billing != null && billing.getAppointment() != this) {
+            billing.setAppointment(this);
+        }
     }
 }
+
