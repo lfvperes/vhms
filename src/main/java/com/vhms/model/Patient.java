@@ -4,23 +4,49 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class Patient {
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id; // Import OneToMany
+import jakarta.persistence.JoinColumn; // Import ManyToOne
+import jakarta.persistence.ManyToOne; // Import JoinColumn
+import jakarta.persistence.OneToMany; // Import CascadeType for relationship management
+
+@Entity
+public abstract class Patient {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     private String name;
     private byte age;
+
+    // @ManyToOne annotation for the Tutor relationship
+    @ManyToOne
+    @JoinColumn(name = "tutor_id") // Assuming a tutor_id foreign key in the patient table
     private Tutor tutor;
+
     private Species species;
-    private long id;
     private boolean microchip;
     private boolean insurance;
-    private final List<Appointment> medicalHistory;
+
+    // @OneToMany annotation for the Appointment relationship
+    // mappedBy refers to the 'patient' field in the Appointment class
+    // CascadeType.ALL means operations on Patient (like delete) will cascade to Appointments
+    // orphanRemoval = true means if an Appointment is removed from the list, it's deleted from the DB
+    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL, orphanRemoval = true)
+    private final List<Appointment> medicalHistory = new ArrayList<>(); // Initialize directly
+
     private boolean sex;
     private float weight;
     private String breed;
 
-    public Patient(byte age, String breed, long id, boolean insurance, boolean microchip, String name, boolean sex, Species species, Tutor tutor, float weight) {
+    // Constructor updated: removed 'long id' as it's auto-generated
+    public Patient(byte age, String breed, boolean insurance, boolean microchip, String name, boolean sex, Species species, Tutor tutor, float weight) {
         this.age = age;
         this.breed = breed;
-        this.id = id;
         this.insurance = insurance;
         this.microchip = microchip;
         this.name = name;
@@ -28,7 +54,22 @@ public class Patient {
         this.species = species;
         this.tutor = tutor;
         this.weight = weight;
-        this.medicalHistory = new ArrayList<>();
+        // medicalHistory is initialized directly above
+    }
+
+    // Default constructor for JPA (required)
+    public Patient() {
+        // medicalHistory is initialized directly above
+    }
+
+    // --- Getters and Setters ---
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -42,31 +83,39 @@ public class Patient {
     }
     public void setAge(byte newAge) {
         if (newAge <= 0) {
-            // Throw and exception to signal that this is an invalid operation
             throw new IllegalArgumentException("Age must be positive.");
         }
         this.age = newAge;
     }
+
     public Tutor getTutor() {
         return tutor;
     }
-    public void changeTutor(Tutor oldTutor, Tutor newTutor) {
-        oldTutor.removePet(this);
-        newTutor.addPet(this);
-        this.tutor = newTutor;
+    public void setTutor(Tutor tutor) {
+        this.tutor = tutor;
     }
+
+    // Method to manage the relationship for Tutor
+    // This helps keep both sides of the relationship synchronized
+    public void changeTutor(Tutor oldTutor, Tutor newTutor) {
+        if (oldTutor != null) {
+            oldTutor.removePet(this); // Assuming Tutor has removePet method
+        }
+        if (newTutor != null) {
+            newTutor.addPet(this); // Assuming Tutor has addPet method
+            this.tutor = newTutor;
+        } else {
+            this.tutor = null; // Handle case where tutor is being removed
+        }
+    }
+
     public Species getSpecies() {
         return species;
     }
     public void setSpecies(Species species) {
         this.species = species;
     }
-    public long getId() {
-        return id;
-    }
-    public void setId(long id) {
-        this.id = id;
-    }
+
     public boolean hasMicrochip() {
         return microchip;
     }
@@ -83,17 +132,27 @@ public class Patient {
     public void setInsurance(boolean insurance) {
         this.insurance = insurance;
     }
+
+    // This getter returns an unmodifiable list to prevent direct modification
     public List<Appointment> getMedicalHistory() {
         return Collections.unmodifiableList(medicalHistory);
     }
 
+    // Helper methods to manage the bidirectional relationship with Appointment
     public void addAppointmentToHistory(Appointment appointment) {
-        this.medicalHistory.add(appointment);
+        if (appointment != null) {
+            this.medicalHistory.add(appointment);
+            appointment.setPatient(this); // Crucial: set the patient on the appointment side
+        }
     }
 
     public void removeAppointmentFromHistory(Appointment appointment) {
-        this.medicalHistory.remove(appointment);
+        if (appointment != null) {
+            this.medicalHistory.remove(appointment);
+            appointment.setPatient(null); // Break the link on the appointment side
+        }
     }
+
     public boolean isMale() {
         return sex;
     }
@@ -106,7 +165,6 @@ public class Patient {
     
     public void setWeight(float newWeight) {
         if (newWeight <= 0) {
-            // Throw an exception to signal that this is an invalid operation
             throw new IllegalArgumentException("Weight must be positive.");
         }
         this.weight = newWeight;
@@ -118,5 +176,4 @@ public class Patient {
     public void setBreed(String breed) {
         this.breed = breed;
     }
-    
 }
