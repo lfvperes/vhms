@@ -1,27 +1,32 @@
 package com.vhms.model;
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-
 import com.vhms.utils.ValidationUtils;
+
+import jakarta.persistence.Entity; // Import Entity
+import jakarta.persistence.GeneratedValue; // Import GeneratedValue
+import jakarta.persistence.GenerationType; // Import GenerationType
+import jakarta.persistence.Id; // Import Id
 
 /**
  *
  * @author lfvperes
  */
+@Entity // Mark this class as a JPA entity
 public class Doctor {
     private String name;
     private String specialization;
-    private long id;
+    @Id // Designate this as the primary key
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // Auto-generate the ID
+    private Long id; // Changed to Long for JPA compatibility
     private String email;
     private String phone;
 
-    public Doctor(String email, long id, String name, String phone, String specialization) {
-        this.email = email;
-        this.id = id;
+    // Constructors
+    public Doctor() {
+    }
+
+    // Removed the constructor that takes id and phone/email, as these will be managed by JPA or set later.
+    public Doctor(String name, String specialization) {
         this.name = name;
-        this.phone = phone;
         this.specialization = specialization;
     }
 
@@ -41,11 +46,12 @@ public class Doctor {
         this.specialization = specialization;
     }
 
-    public long getId() {
+    // Getter and setter for id
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -73,3 +79,4 @@ public class Doctor {
         return phone;
     }
 }
+

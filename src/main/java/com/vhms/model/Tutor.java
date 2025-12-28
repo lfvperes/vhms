@@ -1,27 +1,48 @@
 package com.vhms.model;
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 
-import com.vhms.utils.ValidationUtils;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.vhms.utils.ValidationUtils;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+
+@Entity
 public class Tutor {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String name;
-    private long id;
-    private final List<Patient> pets;
     private String email;
     private String phone;
 
-    public Tutor(String name, long id, String email, String phone) {
+    // One tutor can have many patients
+    @OneToMany(mappedBy = "tutor", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Patient> pets = new ArrayList<>();
+
+    // Constructors
+    public Tutor() {
+    }
+    public Tutor(String name, String email, String phone) {
         this.name = name;
-        this.id = id;
         this.email = email;
         this.phone = phone;
-        this.pets = new ArrayList<>();
+    }
+
+    // Getters and setters
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -32,24 +53,22 @@ public class Tutor {
         this.name = name;
     }
 
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
     public List<Patient> getPets() {
         return Collections.unmodifiableList(pets);
     }
 
     public void addPet(Patient patient) {
+        if (patient != null) {
         this.pets.add(patient);
+            patient.setTutor(this); // Crucial: set the tutor on the patient side
+    }
     }
 
     public void removePet(Patient patient) {
-        this.pets.remove(patient);
+        if (patient != null) {
+            this.pets.remove(patient);
+            patient.setTutor(null); // Break the link on the patient side
+    }
     }
 
     public String getPhone() {
@@ -76,3 +95,4 @@ public class Tutor {
         }
     }
 }
+
