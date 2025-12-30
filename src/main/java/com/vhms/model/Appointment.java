@@ -1,4 +1,5 @@
 package com.vhms.model;
+
 import java.time.LocalDateTime;
 
 import jakarta.persistence.CascadeType;
@@ -12,6 +13,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+
 /**
  * Represents a scheduled appointment with a patient.
  */
@@ -33,6 +35,9 @@ public class Appointment {
     @Column(name = "notes", columnDefinition = "TEXT") // Use TEXT for potentially long notes
     private String notes;
 
+    @Column(name = "status", length = 50) // Status can be used to track appointment status
+    private String status;
+
     // Relationships
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL) // Lazy fetch, cascade updates to patient
     @JoinColumn(name = "patient_id", nullable = false) // Foreign key column in the 'appointments' table
@@ -46,7 +51,6 @@ public class Appointment {
     @JoinColumn(name = "tutor_id") // Foreign key column for Tutor
     private Tutor tutor;
 
-    // --- Billing Relationship ---
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL) // Assuming Appointment owns the relationship for simplicity now
     @JoinColumn(name = "billing_id", unique = true) // Unique FK if one appointment has one billing
     private Billing billing;
@@ -72,7 +76,8 @@ public class Appointment {
     }
 
     // Constructor to include more details if needed
-    public Appointment(LocalDateTime appointmentDateTime, String reason, String notes, Patient patient, Doctor doctor, Tutor tutor) {
+    public Appointment(LocalDateTime appointmentDateTime, String reason, String notes, Patient patient, Doctor doctor,
+            Tutor tutor) {
         this(appointmentDateTime, reason, patient, doctor); // Call the primary constructor
         this.notes = notes != null ? notes : "";
         this.tutor = tutor;
@@ -128,6 +133,14 @@ public class Appointment {
         this.notes = notes;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
     public Tutor getTutor() {
         return tutor;
     }
@@ -141,11 +154,20 @@ public class Appointment {
     }
 
     public void setBilling(Billing billing) {
-        this.billing = billing;
-        // If Appointment owns the FK and relationship, ensure the back-reference is set
-        if (billing != null && billing.getAppointment() != this) {
-            billing.setAppointment(this);
+        // If the new billing is different from the old one
+        if (this.billing != billing) {
+            // If there was an old billing, remove the bidirectional link from it
+            if (this.billing != null) {
+                this.billing.setAppointment(null);
+            }
+            // Set the new billing
+            this.billing = billing;
+            // If the new billing is not null, set the bidirectional link to this appointment
+            if (billing != null) {
+                billing.setAppointment(this);
+            }
         }
     }
+
 }
 
