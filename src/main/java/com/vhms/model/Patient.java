@@ -25,7 +25,7 @@ public abstract class Patient {
 
     // @ManyToOne annotation for the Tutor relationship
     @ManyToOne
-    @JoinColumn(name = "tutor_id") // Assuming a tutor_id foreign key in the patient table
+    @JoinColumn(name = "tutor_id")
     private Tutor tutor;
 
     private Species species;
@@ -92,7 +92,13 @@ public abstract class Patient {
         return tutor;
     }
     public void setTutor(Tutor tutor) {
+        if (this.tutor!= null) {
+            this.tutor.removePet(this);
+        }
         this.tutor = tutor;
+        if (tutor!= null) {
+            tutor.addPet(this);
+        }
     }
 
     // Method to manage the relationship for Tutor

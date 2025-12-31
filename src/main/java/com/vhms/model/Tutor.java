@@ -25,7 +25,7 @@ public class Tutor {
 
     // One tutor can have many patients
     @OneToMany(mappedBy = "tutor", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Patient> pets = new ArrayList<>();
+    private final List<Patient> pets = new ArrayList<>();
 
     // Constructors
     public Tutor() {
