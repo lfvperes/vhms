@@ -1,64 +1,76 @@
-# Continue code agent
-.continue
+# =========================
+# Python / Django
+# =========================
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
 
-# Compiled class files
-*.class
+# Virtual environments (just in case)
+.venv/
+venv/
+env/
 
-# Log files
+# Django stuff
 *.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
 
-# BlueJ files
-*.ctxt
+# Django migrations cache
+*/migrations/__pycache__/
 
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
+# =========================
+# Environment variables
+# =========================
+.env
+.env.*
+!.env.example
 
-# Package Files #
-*.jar
-*.war
-*.ear
-*.zip
-*.tar.gz
-*.rar
+# =========================
+# Docker
+# =========================
+# Docker volumes (if ever bind-mounted)
+postgres_data/
+docker-data/
 
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
-hs_err_pid*
-
-# Build directories
-/target/
-/build/
-/bin/
-/out/
-
-# IDE settings
-
-# Visual Studio Code
+# =========================
+# IDEs / Editors
+# =========================
 .vscode/
-
-# IntelliJ IDEA
 .idea/
 *.iml
-*.ipr
-*.iws
 
-# Eclipse
-.project
-.classpath
-.settings/
-
-# Maven
-pom.xml.tag
-pom.xml.releaseBackup
-pom.xml.versionsBackup
-pom.xml.next
-release.properties
-dependency-reduced-pom.xml
-buildNumber.properties
-
-# Gradle
-.gradle/
-build/
-
-# Other
+# =========================
+# OS files
+# =========================
 .DS_Store
 Thumbs.db
+
+# =========================
+# Test / coverage
+# =========================
+.coverage
+htmlcov/
+.pytest_cache/
+.tox/
+
+# =========================
+# Static & media (prod-generated)
+# =========================
+staticfiles/
+media/
+
+# =========================
+# Build artifacts
+# =========================
+dist/
+build/
+*.egg-info/
+
+
+# =========================
+# Continue code agent
+# =========================
+.continue
+
