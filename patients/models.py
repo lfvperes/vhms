@@ -1,5 +1,6 @@
 from django.db import models
 
+
 # Create your models here.
 class Species(models.TextChoices):
     CANINE = "CANINE", "Canine"
@@ -10,6 +11,7 @@ class Species(models.TextChoices):
     AMPHIBIAN = "AMPHIBIAN", "Amphibian"
     FISH = "FISH", "Fish"
     OTHER = "OTHER", "Other"
+
 
 class Patient(models.Model):
     name = models.CharField(max_length=100)
