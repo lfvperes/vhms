@@ -48,9 +48,7 @@ class Patient(models.Model):
 
     tutor = models.ForeignKey(
         "tutors.Tutor",
-        on_delete=models.PROTECT,
-        null=True,
-        blank=True,
+        on_delete=models.PROTECT
     )
 
     created_at = models.DateTimeField(auto_now_add=True)
