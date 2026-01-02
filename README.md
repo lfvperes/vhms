@@ -8,3 +8,9 @@ The system is designed around a central `VeterinaryHospital` class that manages 
 Below is the UML class diagram that represents the architecture of the system.
 
 ![VHMS Class Diagram](docs/vhms-class-diagram.svg)
+
+## Creating new apps
+
+Always run:
+
+docker compose run --rm web python manage.py startapp <app_name> backend/<app_name>
