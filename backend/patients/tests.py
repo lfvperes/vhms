@@ -1,5 +1,5 @@
 from django.test import TestCase
-from patients.models import Patient, Species
+from backend.patients.models import Patient, Species
 
 
 class PatientModelTest(TestCase):
