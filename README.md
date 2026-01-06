@@ -17,6 +17,17 @@ Always run:
 docker compose run --rm web python manage.py startapp <app_name> backend/<app_name>
 ```
 
+## Creating and applying migrations
+```bash
+docker compose run --rm web python manage.py makemigrations doctors
+
+```
+
+```bash
+docker compose run --rm web python manage.py migrate
+```
+
+
 ## Running this project after installation
 ```bash
 docker compose up
