@@ -13,7 +13,9 @@ Below is the UML class diagram that represents the architecture of the system.
 
 Always run:
 
+```bash
 docker compose run --rm web python manage.py startapp <app_name> backend/<app_name>
+```
 
 ## Running this project after installation
 ```bash
