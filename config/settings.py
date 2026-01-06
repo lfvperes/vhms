@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'backend.patients',
-    'backend.tutors'
+    'backend.tutors',
+    'backend.doctors',
 ]
 
 MIDDLEWARE = [
