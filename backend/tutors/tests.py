@@ -39,10 +39,10 @@ class TutorModelTest(TestCase):
             email="tutor.with.patients@example.com",
             phone="5551112222",
         )
-        
+
         # Add patients to the tutor
         from backend.patients.models import Patient, Species
-        
+
         Patient.objects.create(
             name="Buddy",
             age=5,
@@ -50,7 +50,7 @@ class TutorModelTest(TestCase):
             sex="M",
             tutor=tutor,
         )
-        
+
         Patient.objects.create(
             name="Whiskers",
             age=3,
@@ -58,9 +58,12 @@ class TutorModelTest(TestCase):
             sex="F",
             tutor=tutor,
         )
-        
+
         # Verify the __str__ method includes the patient count
-        self.assertEqual(str(tutor), "Tutor with Patients (tutor.with.patients@example.com) - 2 patients")
+        self.assertEqual(
+            str(tutor),
+            "Tutor with Patients (tutor.with.patients@example.com) - 2 patients"
+        )
 
     def test_email_uniqueness(self):
         """
@@ -103,13 +106,13 @@ class TutorModelTest(TestCase):
             email="tutor.with.patients@example.com",
             phone="5551112222",
         )
-        
+
         # Initially, the tutor has no patients
         self.assertEqual(tutor.get_patients_display(), "")
-        
+
         # Add patients to the tutor (assuming the Patient model is available)
         from backend.patients.models import Patient, Species
-        
+
         patient1 = Patient.objects.create(
             name="Buddy",
             age=5,
@@ -117,7 +120,7 @@ class TutorModelTest(TestCase):
             sex="M",
             tutor=tutor,
         )
-        
+
         patient2 = Patient.objects.create(
             name="Whiskers",
             age=3,
@@ -125,6 +128,6 @@ class TutorModelTest(TestCase):
             sex="F",
             tutor=tutor,
         )
-        
+
         # Verify the get_patients_display method
         self.assertEqual(tutor.get_patients_display(), "Buddy, Whiskers")
