@@ -46,13 +46,10 @@ class Patient(models.Model):
         default="U",
     )
 
-    tutor = models.ForeignKey(
-        "tutors.Tutor",
-        on_delete=models.PROTECT
-    )
+    tutor = models.ForeignKey("tutors.Tutor", on_delete=models.PROTECT)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.name} ({self.get_species_display()})"
+        return f"{self.name} ({self.get_species_display()})"  # type: ignore[attr-defined]

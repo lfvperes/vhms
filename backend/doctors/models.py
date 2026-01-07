@@ -1,12 +1,12 @@
 from django.db import models
 
-# Create your models here.
+
 class Doctor(models.Model):
     full_name = models.CharField(max_length=150)
     license_number = models.CharField(max_length=50, unique=True)
     specialty = models.CharField(max_length=100, blank=True)
     is_active = models.BooleanField(default=True)
-    
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
