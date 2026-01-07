@@ -42,7 +42,7 @@ class Appointment(models.Model):
 class Meta:
     constraints = [
         models.CheckConstraint(
-            check=models.Q(ends_at__gt=models.F("starts_at")),
+            condition=models.Q(ends_at__gt=models.F("starts_at")),
             name="appointment_ends_after_start"
         )
     ]
