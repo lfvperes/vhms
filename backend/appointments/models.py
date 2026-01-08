@@ -26,28 +26,31 @@ class Appointment(models.Model):
 
     status = models.CharField(
         max_length=20,
-        choices=AppointmentStatus.choices
+        choices=AppointmentStatus.choices,
+        blank=False,
+        default=AppointmentStatus.SCHEDULED,
     )
 
-    starts_at = models.DateTimeField(blank=False)
-    ends_at = models.DateTimeField(blank=False)
+    id = models.BigAutoField(primary_key=True)
 
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now_add=True)
+    starts_at = models.DateTimeField()
+    ends_at = models.DateTimeField()
+
+    created_at = models.DateTimeField(auto_now=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f"{self.patient} - {self.doctor} - {self.starts_at}"
 
+    class Meta:
+        constraints = [
+            models.CheckConstraint(
+                condition=models.Q(ends_at__gt=models.F("starts_at")),
+                name="appointment_ends_after_start"
+            )
+        ]
 
-class Meta:
-    constraints = [
-        models.CheckConstraint(
-            condition=models.Q(ends_at__gt=models.F("starts_at")),
-            name="appointment_ends_after_start"
-        )
-    ]
-
-    indexes = [
-        models.Index(fields=["doctor", "starts_at"]),
-        models.Index(fields=["patient", "starts_at"]),
-    ]
+        indexes = [
+            models.Index(fields=["doctor", "starts_at"]),
+            models.Index(fields=["patient", "starts_at"]),
+        ]
