@@ -1,9 +1,14 @@
-from .models import Invoice, InvoiceItem
+from django.db import transaction
+from django.utils import timezone
+
+from .models import Invoice, Payment
+from .exceptions import DomainError
 
 
 class InvoiceService:
     @staticmethod
-    def issue(invoice: Invoice):
+    @transaction.atomic
+    def issue(invoice: Invoice) -> None:
         if invoice.status != Invoice.Status.DRAFT:
             raise DomainError("Only draft invoices can be issued")
 
@@ -12,16 +17,17 @@ class InvoiceService:
 
         invoice.status = Invoice.Status.ISSUED
         invoice.issued_at = timezone.now()
-        invoice.save()
+        invoice.save(update_fields=["status", "issued_at"])
 
 
 class PaymentService:
     @staticmethod
-    def register_payment(invoice: Invoice, amount, method):
-        if invoice.status not in [
+    @transaction.atomic
+    def register_payment(invoice: Invoice, amount, method) -> None:
+        if invoice.status not in (
             Invoice.Status.ISSUED,
             Invoice.Status.PARTIALLY_PAID,
-        ]:
+        ):
             raise DomainError("Invoice not payable")
 
         if amount <= 0:
@@ -36,9 +42,10 @@ class PaymentService:
             method=method,
         )
 
+        # Re-evaluate after payment
         if invoice.balance == 0:
             invoice.status = Invoice.Status.PAID
         else:
             invoice.status = Invoice.Status.PARTIALLY_PAID
 
-        invoice.save()
+        invoice.save(update_fields=["status"])

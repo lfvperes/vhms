@@ -1,7 +1,7 @@
+from decimal import Decimal
 from django.db import models
 
 
-# Create your models here.
 class Invoice(models.Model):
     class Status(models.TextChoices):
         DRAFT = "draft"
@@ -11,12 +11,12 @@ class Invoice(models.Model):
         CANCELLED = "cancelled"
 
     tutor = models.ForeignKey(
-        Tutor,
+        'tutors.Tutor',
         on_delete=models.PROTECT,
         related_name="invoices",
     )
     patient = models.ForeignKey(
-        Patient,
+        'patients.Patient',
         null=True,
         blank=True,
         on_delete=models.PROTECT,
@@ -38,19 +38,28 @@ class Invoice(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     @property
-    def total_amount(self):
+    def total_amount(self) -> Decimal:
         return sum(
-            item.quantity * item.unit_price
-            for item in self.items.all()
+            (item.quantity * item.unit_price for item in self.items.all()),
+            Decimal("0"),
         )
 
     @property
-    def paid_amount(self):
-        return sum(p.amount for p in self.payments.all())
+    def paid_amount(self) -> Decimal:
+        return sum(
+            (p.amount for p in self.payments.all()),
+            Decimal("0"),
+        )
 
     @property
-    def balance(self):
+    def balance(self) -> Decimal:
         return self.total_amount - self.paid_amount
+
+    def __str__(self) -> str:
+        return f"Invoice #{self.pk} ({self.status})"
+
+    items: "models.Manager"
+    payments: "models.Manager"
 
 
 class InvoiceItem(models.Model):
@@ -62,11 +71,15 @@ class InvoiceItem(models.Model):
 
     description = models.CharField(max_length=255)
 
-    quantity = models.DecimalField(max_digits=10, decimal_places=2, default=1)
+    quantity = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        default=Decimal("1"),
+    )
     unit_price = models.DecimalField(max_digits=10, decimal_places=2)
 
     appointment = models.ForeignKey(
-        Appointment,
+        'appointments.Appointment',
         null=True,
         blank=True,
         on_delete=models.SET_NULL,
@@ -75,6 +88,9 @@ class InvoiceItem(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self) -> str:
+        return f"{self.description} x {self.quantity}"
 
 
 class Payment(models.Model):
@@ -95,5 +111,7 @@ class Payment(models.Model):
     method = models.CharField(max_length=20, choices=Method.choices)
 
     paid_at = models.DateTimeField(auto_now_add=True)
-
     created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self) -> str:
+        return f"Payment {self.amount} ({self.method})"
