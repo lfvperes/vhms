@@ -1,5 +1,6 @@
 services:
   web:
+    user: "${UID}:${GID}"
     build: .
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
@@ -10,6 +11,9 @@ services:
       - .env
     depends_on:
       - db
+    environment:
+      - UID=${UID}
+      - GID=${GID}
 
   db:
     image: postgres:16
