@@ -18,13 +18,24 @@ docker compose run --rm web python manage.py startapp <app_name> backend/<app_na
 ```
 
 ## Creating and applying migrations
+### First
 ```bash
 docker compose run --rm web python manage.py makemigrations doctors
 
 ```
+or
+```bash
+docker compose exec web python manage.py makemigrations doctors
+
+```
+### Then
 
 ```bash
 docker compose run --rm web python manage.py migrate
+```
+or
+```bash
+docker compose exec web python manage.py migrate
 ```
 
 
