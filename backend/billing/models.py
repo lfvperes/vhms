@@ -61,6 +61,18 @@ class Invoice(models.Model):
     items: "models.Manager"
     payments: "models.Manager"
 
+    def save(self, *args, **kwargs):
+        if self.pk:
+            original = Invoice.objects.get(pk=self.pk)
+
+            # If status is not draft, block modifications
+            if original.status != self.Status.DRAFT:
+                raise ValueError(
+                    f"Cannot modify invoice in '{original.status}' status"
+                )
+
+        super().save(*args, **kwargs)
+
 
 class InvoiceItem(models.Model):
     invoice = models.ForeignKey(
