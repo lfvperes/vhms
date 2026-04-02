@@ -149,3 +149,20 @@ class Payment(models.Model):
 
     def __str__(self) -> str:
         return f"Payment {self.amount} ({self.method})"
+
+    def save(self, *args, **kwargs):
+        if not self.invoice:
+            raise ValueError("Payment must be associated with an invoice")
+
+        invoice = self.invoice
+
+        if invoice.status in [invoice.Status.DRAFT, invoice.Status.CANCELLED]:
+            raise ValueError(
+                f"Cannot register payment for invoice in '{invoice.status}' status"
+            )
+
+        if not self.pk:
+            if self.amount > invoice.balance:
+                raise ValueError("Payment exceeds invoice balance")
+
+        super().save(*args, **kwargs)
