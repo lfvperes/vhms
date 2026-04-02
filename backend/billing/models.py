@@ -87,6 +87,14 @@ class Invoice(models.Model):
 
         super(Invoice, self).save()
 
+    def cancel(self):
+        if self.status != self.Status.ISSUED:
+            raise ValueError("Only issued invoices can be cancelled")
+
+        self.status = self.Status.CANCELLED
+
+        super(Invoice, self).save()
+
 
 class InvoiceItem(models.Model):
     invoice = models.ForeignKey(
