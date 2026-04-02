@@ -1,5 +1,6 @@
 from decimal import Decimal
 from django.db import models
+from django.utils import timezone
 
 
 class Invoice(models.Model):
@@ -65,13 +66,26 @@ class Invoice(models.Model):
         if self.pk:
             original = Invoice.objects.get(pk=self.pk)
 
-            # If status is not draft, block modifications
+            # Block ANY changes if not draft
             if original.status != self.Status.DRAFT:
                 raise ValueError(
                     f"Cannot modify invoice in '{original.status}' status"
                 )
 
+            # Also block changing status directly
+            if self.status != original.status:
+                raise ValueError("Status changes must use domain methods")
+
         super().save(*args, **kwargs)
+
+    def issue(self):
+        if self.status != self.Status.DRAFT:
+            raise ValueError("Only draft invoices can be issued")
+
+        self.status = self.Status.ISSUED
+        self.issued_at = timezone.now()
+
+        super(Invoice, self).save()
 
 
 class InvoiceItem(models.Model):
