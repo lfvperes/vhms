@@ -88,7 +88,7 @@ class Invoice(models.Model):
         self.status = self.Status.ISSUED
         self.issued_at = timezone.now()
 
-        super(Invoice, self).save(_bypass_status_lock=True)
+        self.save(_bypass_status_lock=True)
 
     def cancel(self):
         if self.status != self.Status.ISSUED:
@@ -96,7 +96,7 @@ class Invoice(models.Model):
 
         self.status = self.Status.CANCELLED
 
-        super(Invoice, self).save(_bypass_status_lock=True)
+        self.save(_bypass_status_lock=True)
 
     def total_paid(self):
         return self.payments.aggregate(total=Sum("amount"))["total"] or 0
