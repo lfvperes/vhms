@@ -1,6 +1,7 @@
 from decimal import Decimal
 from django.db import models
 from django.utils import timezone
+from django.db.models import Sum
 
 
 class Invoice(models.Model):
@@ -63,7 +64,9 @@ class Invoice(models.Model):
     payments: "models.Manager"
 
     def save(self, *args, **kwargs):
-        if self.pk:
+        bypass = kwargs.pop("_bypass_status_lock", False)
+
+        if self.pk and not bypass:
             original = Invoice.objects.get(pk=self.pk)
 
             # Block ANY changes if not draft
@@ -85,7 +88,7 @@ class Invoice(models.Model):
         self.status = self.Status.ISSUED
         self.issued_at = timezone.now()
 
-        super(Invoice, self).save()
+        super(Invoice, self).save(_bypass_status_lock=True)
 
     def cancel(self):
         if self.status != self.Status.ISSUED:
@@ -93,7 +96,24 @@ class Invoice(models.Model):
 
         self.status = self.Status.CANCELLED
 
-        super(Invoice, self).save()
+        super(Invoice, self).save(_bypass_status_lock=True)
+
+    def total_paid(self):
+        return self.payments.aggregate(total=Sum("amount"))["total"] or 0
+
+    def update_payment_status(self):
+        paid = self.total_paid()
+
+        if paid == 0:
+            return  # stay issued
+
+        if paid < self.total_amount:
+            self.status = self.Status.PARTIALLY_PAID
+
+        elif paid == self.total_amount:
+            self.status = self.Status.PAID
+
+        self.save(update_fields=["status"], _bypass_status_lock=True)
 
 
 class InvoiceItem(models.Model):
@@ -166,3 +186,6 @@ class Payment(models.Model):
                 raise ValueError("Payment exceeds invoice balance")
 
         super().save(*args, **kwargs)
+
+        # after saving, update invoice state
+        self.invoice.update_payment_status()
