@@ -174,6 +174,9 @@ class Payment(models.Model):
         if not self.invoice:
             raise ValueError("Payment must be associated with an invoice")
 
+        if self.pk:
+            raise ValueError("Payments cannot be modified after creation")
+
         invoice = self.invoice
 
         if invoice.status in [invoice.Status.DRAFT, invoice.Status.CANCELLED]:
@@ -189,3 +192,6 @@ class Payment(models.Model):
 
         # after saving, update invoice state
         self.invoice.update_payment_status()
+
+    def delete(self, *args, **kwargs):
+        raise ValueError("Payments cannot be deleted")
