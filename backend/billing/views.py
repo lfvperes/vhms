@@ -1,4 +1,5 @@
 from rest_framework import viewsets, status
+from rest_framework.permissions import AllowAny
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
@@ -7,6 +8,7 @@ from .serializers import InvoiceSerializer, PaymentSerializer
 
 
 class InvoiceViewSet(viewsets.ModelViewSet):
+    permission_classes = [AllowAny]
     queryset = Invoice.objects.all()
     serializer_class = InvoiceSerializer
 

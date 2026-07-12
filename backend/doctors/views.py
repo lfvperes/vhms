@@ -1,10 +1,12 @@
 from rest_framework import viewsets, filters
+from rest_framework.permissions import AllowAny
 from django_filters.rest_framework import DjangoFilterBackend
 from .models import Doctor
 from .serializers import DoctorSerializer
 
 
 class DoctorViewSet(viewsets.ModelViewSet):
+    permission_classes = [AllowAny]
     queryset = Doctor.objects.all()
     serializer_class = DoctorSerializer
 
